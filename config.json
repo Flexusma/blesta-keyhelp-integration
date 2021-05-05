@@ -1,19 +1,19 @@
 {
-    "version": "2.15.0",
-    "name": "Cpanel.name",
-    "description": "Cpanel.description",
+    "version": "0.0.1",
+    "name": "KeyHelp.name",
+    "description": "KeyHelp.description",
     "authors": [
         {
-            "name": "Phillips Data, Inc.",
-            "url": "http://www.blesta.com"
+            "name": "Flexusma",
+            "url": "http://flexusma.de"
         }
     ],
     "service": {
         "name_key": "cpanel_domain"
     },
     "module": {
-        "row": "Cpanel.module_row",
-        "rows": "Cpanel.module_row_plural",
+        "row": "KeyHelp.module_row",
+        "rows": "KeyHelp.module_row_plural",
         "row_key": "server_name"
     },
     "email_tags": {

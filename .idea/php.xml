@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/coremio/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/coremio/vendor/phpmailer/phpmailer" />
+      <path value="$PROJECT_DIR$/coremio/vendor/respect/validation" />
+      <path value="$PROJECT_DIR$/coremio/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/coremio/vendor/geoip2/geoip2" />
+      <path value="$PROJECT_DIR$/coremio/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/coremio/vendor/maxmind/web-service-common" />
+      <path value="$PROJECT_DIR$/coremio/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/coremio/vendor/maxmind/minfraud" />
+      <path value="$PROJECT_DIR$/coremio/vendor/maxmind-db/reader" />
+      <path value="$PROJECT_DIR$/coremio/vendor/riimu/kit-phpencoder" />
+      <path value="$PROJECT_DIR$/coremio/vendor/giggsey/locale" />
+      <path value="$PROJECT_DIR$/coremio/vendor/giggsey/libphonenumber-for-php" />
+      <path value="$PROJECT_DIR$/coremio/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/coremio/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/coremio/vendor/symfony/polyfill-iconv" />
+      <path value="$PROJECT_DIR$/coremio/vendor/composer" />
+      <path value="$PROJECT_DIR$/coremio/vendor/stichoza/google-translate-php" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="7">
+    <option name="suggestChangeDefaultLanguageLevel" value="false" />
+  </component>
+</project>
