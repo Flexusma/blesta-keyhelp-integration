@@ -577,7 +577,7 @@ class KeyhelpApi
         // Set the $auth string
 
         if ($this->auth_type == 'hash' || $this->auth_type == 'token') {
-            $authstr = 'Authorization: Bearer ' . $this->auth . "\r\n";
+            $authstr = 'X-API-Key: ' . $this->auth . "\r\n";
         } elseif ($this->auth_type == 'pass') {
             $authstr = 'Authorization: Basic ' . base64_encode($this->user .':'. $this->auth) . "\r\n";
         } else {
@@ -673,13 +673,14 @@ class KeyhelpApi
         }else if($rtype = 3){
             curl_setopt($curl,CURLOPT_CUSTOMREQUEST, "DELETE");
         }
-
+        $this->log("Curl request",$curl,'input', true);
         $result = curl_exec($curl);
         if ($result == false) {
+            $this->log("Curl response",$curl,'output', false);
             throw new Exception("curl_exec threw error \"" . curl_error($curl) . "\" for " . $url . "?" . $postdata );
         }
         curl_close($curl);
-
+        $this->log("Curl response",json_decode($curl),'output', false);
         return $result;
     }
 

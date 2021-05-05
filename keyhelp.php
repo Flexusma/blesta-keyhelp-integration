@@ -389,7 +389,7 @@ class Keyhelp extends Module
         // Load the view into this object, so helpers can be automatically added to the view
         $this->view = new View('manage', 'default');
         $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
@@ -411,7 +411,7 @@ class Keyhelp extends Module
         // Load the view into this object, so helpers can be automatically added to the view
         $this->view = new View('add_row', 'default');
         $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
@@ -440,7 +440,7 @@ class Keyhelp extends Module
         // Load the view into this object, so helpers can be automatically added to the view
         $this->view = new View('edit_row', 'default');
         $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
@@ -458,6 +458,37 @@ class Keyhelp extends Module
         return $this->view->fetch();
     }
 
+
+
+
+    public function testConnection($host,$api_key,$use_ssl){
+
+        $authstr = 'X-API-Key: ' . $api_key;
+        $url = "http://";
+        if($use_ssl)
+            $url = "https://";
+        $url .= $host."/api/v1/ping";
+
+        $ch = curl_init();
+        // set url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,array($authstr));
+
+        //return the transfer as a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $this->log("testreq:",$url."\n".$authstr,"input");
+        // $output contains the output string
+        $resp = curl_exec($ch);
+        $this->log("testreq:",$resp,"output");
+        // close curl resource to free up system resources
+        curl_close($ch);
+        $response = json_decode($resp);
+        if($response->response == "pong")
+            return "pong";
+        else return $resp;
+    }
+
+
     /**
      * Adds the module row on the remote server. Sets Input errors on failure,
      * preventing the row from being added. Returns a set of data, which may be
@@ -472,7 +503,7 @@ class Keyhelp extends Module
     public function addModuleRow(array &$vars)
     {
         $meta_fields = ['server_name', 'host_name', 'user_name', 'key',
-            'use_ssl', 'account_limit', 'name_servers', 'notes'];
+            'use_ssl', 'notes'];
         $encrypted_fields = ['user_name', 'key'];
 
         // Set unspecified checkboxes
@@ -482,8 +513,20 @@ class Keyhelp extends Module
 
         $this->Input->setRules($this->getRowRules($vars));
 
+
+       // Validate module row
+
+        $con = $this->testConnection($vars["host_name"],$vars["key"],$vars["use_ssl"]);
+
+        $this->log("addModuleRowConnectionCheck:",strval($con));
+
+        if($con!="pong") $con = null;
+
+        $err_rep_arr = array(
+            "connection" => $con
+        );
         // Validate module row
-        if ($this->Input->validates($vars)) {
+        if ($this->Input->validates(array_merge($vars,$err_rep_arr))) {
             // Build the meta data for this row
             $meta = [];
             foreach ($vars as $key => $value) {
@@ -515,7 +558,7 @@ class Keyhelp extends Module
     public function editModuleRow($module_row, array &$vars)
     {
         $meta_fields = ['server_name', 'host_name', 'user_name', 'key',
-            'use_ssl', 'account_limit', 'account_count', 'notes'];
+            'use_ssl', 'notes'];
         $encrypted_fields = ['user_name', 'key'];
 
         // Set unspecified checkboxes
@@ -525,8 +568,18 @@ class Keyhelp extends Module
 
         $this->Input->setRules($this->getRowRules($vars));
 
+
+        $con = $this->testConnection($vars["host_name"],$vars["key"],$vars["use_ssl"]);
+
+        $this->log("editModuleRowConnectionCheck: ",strval($con));
+
+        if($con!="pong") $con = null;
+
+        $err_rep_arr = array(
+            "connection" => $con
+        );
         // Validate module row
-        if ($this->Input->validates($vars)) {
+        if ($this->Input->validates(array_merge($vars,$err_rep_arr))) {
             // Build the meta data for this row
             $meta = [];
             foreach ($vars as $key => $value) {
@@ -1447,7 +1500,7 @@ class Keyhelp extends Module
         // Load the view into this object, so helpers can be automatically added to the view
         $this->view = new View('admin_service_info', 'default');
         $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html']);
@@ -1480,7 +1533,7 @@ class Keyhelp extends Module
         // Load the view into this object, so helpers can be automatically added to the view
         $this->view = new View('client_service_info', 'default');
         $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html']);
@@ -1519,7 +1572,7 @@ class Keyhelp extends Module
         $this->view->set('stats', $stats);
         $this->view->set('user_type', $package->meta->type);
 
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
         return $this->view->fetch();
     }
 
@@ -1544,7 +1597,7 @@ class Keyhelp extends Module
         $this->view->set('stats', $stats);
         $this->view->set('user_type', $package->meta->type);
 
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
         return $this->view->fetch();
     }
 
@@ -1663,7 +1716,7 @@ class Keyhelp extends Module
         $this->view->set('service_id', $service->id);
         $this->view->set('vars', (isset($vars) ? $vars : new stdClass()));
 
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'cpanel' . DS);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'keyhelp' . DS);
         return $this->view->fetch();
     }
 
@@ -2220,7 +2273,7 @@ class Keyhelp extends Module
                     'negate'=>true,
                     'message'=>Language::_('Keyhelp.!error.remote_key_valid', true)
                 ],
-                'valid_connection'=>[
+                /*'valid_connection'=>[
                     'rule' => [
                         [$this, 'validateConnection'],
                         $vars['host_name'],
@@ -2229,9 +2282,17 @@ class Keyhelp extends Module
                         &$vars['account_count']
                     ],
                     'message'=>Language::_('Keyhelp.!error.remote_key_valid_connection', true)
+                */
+                ],
+            'connection'=>[
+                    'valid'=>[
+                        'rule'=>'isEmpty',
+                        'negate'=> true,
+                        'message'=>Language::_('Keyhelp.!error.remote_key_valid_connection', true)
+
+                    ]
                 ]
-            ],
-            'account_limit'=>[
+           /* 'account_limit'=>[
                 'valid'=>[
                     'rule'=>['matches', '/^([0-9]+)?$/'],
                     'message'=>Language::_('Keyhelp.!error.account_limit_valid', true)
@@ -2246,7 +2307,7 @@ class Keyhelp extends Module
                     'rule'=>[[$this, 'validateNameServers']],
                     'message'=>Language::_('Keyhelp.!error.name_servers_valid', true)
                 ]
-            ]
+            ]*/
         ];
 
         return $rules;

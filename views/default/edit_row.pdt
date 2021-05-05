@@ -51,7 +51,7 @@
                     </li>
                 </ul>
             </div>
-
+<?php /*
             <div class="title_row">
                 <h3><?php $this->_('Keyhelp.edit_row.name_servers_title');?></h3>
             </div>
@@ -83,6 +83,8 @@
                     </tbody>
                 </table>
             </div>
+
+            */?>
 
             <div class="title_row">
                 <h3><?php $this->_('Keyhelp.edit_row.notes_title');?></h3>
