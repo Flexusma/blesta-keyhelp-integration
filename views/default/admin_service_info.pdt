@@ -1,10 +1,10 @@
     <table class="table">
         <tr class="heading_row">
             <td class="fixed_small center border_none"><i class="fas fa-level-up-alt fa-rotate-90"></i></td>
-            <td class="border_left"><?php $this->_('KeyHelp.service_info.username');?></td>
-            <td><?php $this->_('KeyHelp.service_info.password');?></td>
-            <td><?php $this->_('KeyHelp.service_info.server');?></td>
-            <td class="last"><?php $this->_('KeyHelp.service_info.options');?></td>
+            <td class="border_left"><?php $this->_('Keyhelp.service_info.username');?></td>
+            <td><?php $this->_('Keyhelp.service_info.password');?></td>
+            <td><?php $this->_('Keyhelp.service_info.server');?></td>
+            <td class="last"><?php $this->_('Keyhelp.service_info.options');?></td>
         </tr>
         <tr>
             <td></td>
@@ -15,7 +15,7 @@
                 <?php
                // if ($this->Html->ifSet($login_url)) {
                 ?>
-                <a href="<?php //$this->Html->_($login_url);?>" target="_blank"><?php $this->_('KeyHelp.service_info.option_login');?></a>
+                <a href="<?php //$this->Html->_($login_url);?>" target="_blank"><?php $this->_('Keyhelp.service_info.option_login');?></a>
             </td>
         </tr>
     </table>

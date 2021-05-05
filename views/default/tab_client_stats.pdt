@@ -1,11 +1,11 @@
 
-    <h4><?php $this->_('KeyHelp.tab_client_stats.info_title');?></h4>
+    <h4><?php $this->_('Keyhelp.tab_client_stats.info_title');?></h4>
     <div class="table-responsive">
         <table class="table table-curved table-striped">
             <thead>
                 <tr>
-                    <th style="width: 50%;"><?php $this->_('KeyHelp.tab_client_stats.info_heading.field');?></th>
-                    <th><?php $this->_('KeyHelp.tab_client_stats.info_heading.value');?></th>
+                    <th style="width: 50%;"><?php $this->_('Keyhelp.tab_client_stats.info_heading.field');?></th>
+                    <th><?php $this->_('Keyhelp.tab_client_stats.info_heading.value');?></th>
                 </tr>
             </thead>
             <tbody>
@@ -15,7 +15,7 @@
                 if (isset($stats->account_info->acct[0]->{$key})) {
                 ?>
                 <tr>
-                    <td><?php $this->_('KeyHelp.tab_client_stats.info.' . $key);?></td>
+                    <td><?php $this->_('Keyhelp.tab_client_stats.info.' . $key);?></td>
                     <td><?php $this->Html->_($stats->account_info->acct[0]->{$key});?></td>
                 </tr>
                 <?php
@@ -28,7 +28,7 @@
 
     <hr />
 
-    <label><?php $this->_('KeyHelp.tab_client_stats.disk_title');?></label>
+    <label><?php $this->_('Keyhelp.tab_client_stats.disk_title');?></label>
     <?php
     $disk = [
         'used' => round($this->Html->ifSet($stats->disk_usage['used'], 0), 2),
@@ -38,15 +38,15 @@
     $percent_used = ($unlimited ? 0 : round(($this->Html->ifSet($disk['used'], 0)/$this->Html->ifSet($disk['limit']))*100, 0));
     ?>
     <small>
-        <?php echo ($unlimited ? $this->_('KeyHelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($disk['used'])) : $this->_('KeyHelp.tab_client_stats.usage', true, $this->Html->safe($disk['used']), $this->Html->safe($disk['limit'])));?>
+        <?php echo ($unlimited ? $this->_('Keyhelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($disk['used'])) : $this->_('Keyhelp.tab_client_stats.usage', true, $this->Html->safe($disk['used']), $this->Html->safe($disk['limit'])));?>
     </small>
     <div class="progress">
         <div class="progress-bar bg-success" role="progressbar" style="width: <?php $this->Html->_($percent_used);?>%" aria-valuenow="<?php $this->Html->_($percent_used);?>" aria-valuemin="0" aria-valuemax="100">
-            <span class="sr-only"><?php echo ($unlimited ? $this->_('KeyHelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($disk['used'])) : $this->_('KeyHelp.tab_client_stats.usage', true, $this->Html->safe($disk['used']), $this->Html->safe($disk['limit'])));?></span>
+            <span class="sr-only"><?php echo ($unlimited ? $this->_('Keyhelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($disk['used'])) : $this->_('Keyhelp.tab_client_stats.usage', true, $this->Html->safe($disk['used']), $this->Html->safe($disk['limit'])));?></span>
         </div>
     </div>
 
-    <label><?php $this->_('KeyHelp.tab_client_stats.bandwidth_title');?></label>
+    <label><?php $this->_('Keyhelp.tab_client_stats.bandwidth_title');?></label>
     <?php
     $bandwidth = [
         'used' => round($this->Html->ifSet($stats->bandwidth_usage['used'], 0), 2),
@@ -56,10 +56,10 @@
     $percent_used = ($unlimited ? 0 : round(($this->Html->ifSet($bandwidth['used'], 0)/$this->Html->ifSet($bandwidth['limit']))*100, 0));
     ?>
     <small>
-        <?php echo ($unlimited ? $this->_('KeyHelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($bandwidth['used'])) : $this->_('KeyHelp.tab_client_stats.usage', true, $this->Html->safe($bandwidth['used']), $this->Html->safe($bandwidth['limit'])));?>
+        <?php echo ($unlimited ? $this->_('Keyhelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($bandwidth['used'])) : $this->_('Keyhelp.tab_client_stats.usage', true, $this->Html->safe($bandwidth['used']), $this->Html->safe($bandwidth['limit'])));?>
     </small>
     <div class="progress">
         <div class="progress-bar bg-danger" role="progressbar" style="width: <?php $this->Html->_($percent_used);?>%" aria-valuenow="<?php $this->Html->_($percent_used);?>" aria-valuemin="0" aria-valuemax="100">
-            <span class="sr-only"><?php echo ($unlimited ? $this->_('KeyHelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($bandwidth['used'])) : $this->_('KeyHelp.tab_client_stats.usage', true, $this->Html->safe($bandwidth['used']), $this->Html->safe($bandwidth['limit'])));?></span>
+            <span class="sr-only"><?php echo ($unlimited ? $this->_('Keyhelp.tab_client_stats.usage_unlimited', true, $this->Html->safe($bandwidth['used'])) : $this->_('Keyhelp.tab_client_stats.usage', true, $this->Html->safe($bandwidth['used']), $this->Html->safe($bandwidth['limit'])));?></span>
         </div>
     </div>

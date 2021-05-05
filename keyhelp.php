@@ -1,15 +1,15 @@
 <?php
 use Blesta\Core\Util\Validate\Server;
 /**
- * KeyHelp Module
+ * Keyhelp Module
  *
- * @package blesta
+ * @package keyhelp
  * @subpackage blesta.components.modules.cpanel
  * @copyright Copyright (c) 2010, Phillips Data, Inc.
  * @license http://www.blesta.com/license/ The Blesta License Agreement
  * @link http://www.blesta.com/ Blesta
  */
-class KeyHelp extends Module
+class Keyhelp extends Module
 {
 
     /**
@@ -17,6 +17,7 @@ class KeyHelp extends Module
      */
     public function __construct()
     {
+
         // Load configuration required by this module
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
 
@@ -24,7 +25,8 @@ class KeyHelp extends Module
         Loader::loadComponents($this, ['Input']);
 
         // Load the language required by this module
-        Language::loadLang('cpanel', null, dirname(__FILE__) . DS . 'language' . DS);
+        Language::loadLang('keyhelp', null, dirname(__FILE__) . DS . 'language' . DS);
+
     }
 
     /**
@@ -38,7 +40,7 @@ class KeyHelp extends Module
     public function getAdminTabs($package)
     {
         return [
-            'tabStats' => Language::_('KeyHelp.tab_stats', true)
+            'tabStats' => Language::_('Keyhelp.tab_stats', true)
         ];
     }
 
@@ -53,8 +55,8 @@ class KeyHelp extends Module
     public function getClientTabs($package)
     {
         return [
-            'tabClientActions' => Language::_('KeyHelp.tab_client_actions', true),
-            'tabClientStats' => Language::_('KeyHelp.tab_client_stats', true)
+            'tabClientActions' => Language::_('Keyhelp.tab_client_actions', true),
+            'tabClientStats' => Language::_('Keyhelp.tab_client_stats', true)
         ];
     }
 
@@ -71,8 +73,8 @@ class KeyHelp extends Module
     public function getGroupOrderOptions()
     {
         return [
-            'roundrobin' => Language::_('KeyHelp.order_options.roundrobin', true),
-            'first' => Language::_('KeyHelp.order_options.first', true)
+            'roundrobin' => Language::_('Keyhelp.order_options.roundrobin', true),
+            'first' => Language::_('Keyhelp.order_options.first', true)
         ];
     }
 
@@ -148,15 +150,15 @@ class KeyHelp extends Module
         }
 
         $packages = [];
-        $acls = ['' => Language::_('KeyHelp.package_fields.acl_default', true)];
+        $acls = ['' => Language::_('Keyhelp.package_fields.acl_default', true)];
 
         if ($module_row) {
-            $packages = $this->getKeyHelpPackages($module_row);
-            //$acls = $acls + $this->getKeyHelpAcls($module_row);
+            $packages = $this->getKeyhelpPackages($module_row);
+            //$acls = $acls + $this->getKeyhelpAcls($module_row);
         }
 
         // Set the cPanel package as a selectable option
-        $package = $fields->label(Language::_('KeyHelp.package_fields.package', true), 'cpanel_package');
+        $package = $fields->label(Language::_('Keyhelp.package_fields.package', true), 'cpanel_package');
         $package->attach(
             $fields->fieldSelect(
                 'meta[package]',
@@ -169,9 +171,9 @@ class KeyHelp extends Module
 
         // Set the type of account (standard or reseller)
         if ($module_row && $module_row->meta->user_name == 'root') {
-            $type = $fields->label(Language::_('KeyHelp.package_fields.type', true), 'cpanel_type');
+            $type = $fields->label(Language::_('Keyhelp.package_fields.type', true), 'cpanel_type');
             $type_standard = $fields->label(
-                Language::_('KeyHelp.package_fields.type_standard', true),
+                Language::_('Keyhelp.package_fields.type_standard', true),
                 'cpanel_type_standard'
             );
             $type->attach(
@@ -191,7 +193,7 @@ class KeyHelp extends Module
         }
 
      /*   // Set the cPanel package as a selectable option
-        $acl = $fields->label(Language::_('KeyHelp.package_fields.acl', true), 'cpanel_acl');
+        $acl = $fields->label(Language::_('Keyhelp.package_fields.acl', true), 'cpanel_acl');
         $acl->attach(
             $fields->fieldSelect(
                 'meta[acl]',
@@ -204,7 +206,7 @@ class KeyHelp extends Module
 
         // Set the account limit for resellers
         $account_limit = $fields->label(
-            Language::_('KeyHelp.package_fields.account_limit', true),
+            Language::_('Keyhelp.package_fields.account_limit', true),
             'cpanel_account_limit'
         );
         $account_limit->attach(
@@ -218,15 +220,15 @@ class KeyHelp extends Module
 
         // Set whether to use a sub_domain
         $sub_domains = $fields->label(
-            Language::_('KeyHelp.package_fields.sub_domains', true),
+            Language::_('Keyhelp.package_fields.sub_domains', true),
             'cpanel_sub_domains'
         );
         $sub_domains_disable = $fields->label(
-            Language::_('KeyHelp.package_fields.sub_domains_disable', true),
+            Language::_('Keyhelp.package_fields.sub_domains_disable', true),
             'cpanel_sub_domains_disable'
         );
         $sub_domains_enable = $fields->label(
-            Language::_('KeyHelp.package_fields.sub_domains_enable', true),
+            Language::_('Keyhelp.package_fields.sub_domains_enable', true),
             'cpanel_sub_domains_enable'
         );
         $sub_domains->attach(
@@ -251,7 +253,7 @@ class KeyHelp extends Module
 
         // Set the domains to be used for sub-domains accounts
         $domains_list = $fields->label(
-            Language::_('KeyHelp.package_fields.domains_list', true),
+            Language::_('Keyhelp.package_fields.domains_list', true),
             'cpanel_domains_list'
         );
         $domains_list->attach(
@@ -261,18 +263,18 @@ class KeyHelp extends Module
                 ['id' => 'cpanel_domains_list']
             )
         );
-        $tooltip = $fields->tooltip(Language::_('KeyHelp.package_fields.tooltip.domains_list', true));
+        $tooltip = $fields->tooltip(Language::_('Keyhelp.package_fields.tooltip.domains_list', true));
         $domains_list->attach($tooltip);
         $fields->setField($domains_list);
 
      /*   // Set whether to use a dedicated IP
-        $dedicated_ip = $fields->label(Language::_('KeyHelp.package_fields.dedicated_ip', true), 'cpanel_dedicated_ip');
+        $dedicated_ip = $fields->label(Language::_('Keyhelp.package_fields.dedicated_ip', true), 'cpanel_dedicated_ip');
         $dedicated_ip->attach(
             $fields->fieldSelect(
                 'meta[dedicated_ip]',
                 [
-                    Language::_('KeyHelp.package_fields.dedicated_ip_no', true),
-                    Language::_('KeyHelp.package_fields.dedicated_ip_yes', true)
+                    Language::_('Keyhelp.package_fields.dedicated_ip_no', true),
+                    Language::_('Keyhelp.package_fields.dedicated_ip_yes', true)
                 ],
                 $this->Html->ifSet($vars->meta['dedicated_ip']),
                 ['id' => 'cpanel_dedicated_ip']
@@ -590,7 +592,7 @@ class KeyHelp extends Module
             $domains = $this->getPackageAvailableDomains($package);
 
             // Create sub_domain label
-            $sub_domain = $fields->label(Language::_('KeyHelp.service_field.sub_domain', true), 'cpanel_sub_domain');
+            $sub_domain = $fields->label(Language::_('Keyhelp.service_field.sub_domain', true), 'cpanel_sub_domain');
             // Create sub_domain field and attach to domain label
             $sub_domain->attach(
                 $fields->fieldText(
@@ -603,7 +605,7 @@ class KeyHelp extends Module
             $fields->setField($sub_domain);
 
             // Create domain label
-            $domain = $fields->label(Language::_('KeyHelp.service_field.domain', true), 'cpanel_domain');
+            $domain = $fields->label(Language::_('Keyhelp.service_field.domain', true), 'cpanel_domain');
             // Create domain field and attach to domain label
             $domain->attach(
                 $fields->fieldSelect(
@@ -617,7 +619,7 @@ class KeyHelp extends Module
             $fields->setField($domain);
         } else {
             // Create domain label
-            $domain = $fields->label(Language::_('KeyHelp.service_field.domain', true), 'cpanel_domain');
+            $domain = $fields->label(Language::_('Keyhelp.service_field.domain', true), 'cpanel_domain');
             // Create domain field and attach to domain label
             $domain->attach(
                 $fields->fieldText(
@@ -631,19 +633,19 @@ class KeyHelp extends Module
         }
 
         // Create username label
-        $username = $fields->label(Language::_('KeyHelp.service_field.username', true), 'cpanel_username');
+        $username = $fields->label(Language::_('Keyhelp.service_field.username', true), 'cpanel_username');
         // Create username field and attach to username label
         $username->attach(
             $fields->fieldText('cpanel_username', $this->Html->ifSet($vars->cpanel_username), ['id'=>'cpanel_username'])
         );
         // Add tooltip
-        $tooltip = $fields->tooltip(Language::_('KeyHelp.service_field.tooltip.username', true));
+        $tooltip = $fields->tooltip(Language::_('Keyhelp.service_field.tooltip.username', true));
         $username->attach($tooltip);
         // Set the label as a field
         $fields->setField($username);
 
         // Create password label
-        $password = $fields->label(Language::_('KeyHelp.service_field.password', true), 'cpanel_password');
+        $password = $fields->label(Language::_('Keyhelp.service_field.password', true), 'cpanel_password');
         // Create password field and attach to password label
         $password->attach(
             $fields->fieldPassword(
@@ -652,14 +654,14 @@ class KeyHelp extends Module
             )
         );
         // Add tooltip
-        $tooltip = $fields->tooltip(Language::_('KeyHelp.service_field.tooltip.password', true));
+        $tooltip = $fields->tooltip(Language::_('Keyhelp.service_field.tooltip.password', true));
         $password->attach($tooltip);
         // Set the label as a field
         $fields->setField($password);
 
         // Confirm password label
         $confirm_password = $fields->label(
-            Language::_('KeyHelp.service_field.confirm_password', true),
+            Language::_('Keyhelp.service_field.confirm_password', true),
             'cpanel_confirm_password'
         );
         // Create confirm password field and attach to password label
@@ -670,7 +672,7 @@ class KeyHelp extends Module
             )
         );
         // Add tooltip
-        $tooltip = $fields->tooltip(Language::_('KeyHelp.service_field.tooltip.password', true));
+        $tooltip = $fields->tooltip(Language::_('Keyhelp.service_field.tooltip.password', true));
         $confirm_password->attach($tooltip);
         // Set the label as a field
         $fields->setField($confirm_password);
@@ -696,7 +698,7 @@ class KeyHelp extends Module
             $domains = $this->getPackageAvailableDomains($package);
 
             // Create sub_domain label
-            $sub_domain = $fields->label(Language::_('KeyHelp.service_field.sub_domain', true), 'cpanel_sub_domain');
+            $sub_domain = $fields->label(Language::_('Keyhelp.service_field.sub_domain', true), 'cpanel_sub_domain');
             // Create sub_domain field and attach to domain label
             $sub_domain->attach(
                 $fields->fieldText(
@@ -710,7 +712,7 @@ class KeyHelp extends Module
             $fields->setField($sub_domain);
 
             // Create domain label
-            $domain = $fields->label(Language::_('KeyHelp.service_field.domain', true), 'cpanel_domain');
+            $domain = $fields->label(Language::_('Keyhelp.service_field.domain', true), 'cpanel_domain');
             // Create domain field and attach to domain label
             $domain->attach(
                 $fields->fieldSelect(
@@ -724,7 +726,7 @@ class KeyHelp extends Module
             $fields->setField($domain);
         } else {
             // Create domain label
-            $domain = $fields->label(Language::_('KeyHelp.service_field.domain', true), 'cpanel_domain');
+            $domain = $fields->label(Language::_('Keyhelp.service_field.domain', true), 'cpanel_domain');
             // Create domain field and attach to domain label
             $domain->attach(
                 $fields->fieldText(
@@ -755,7 +757,7 @@ class KeyHelp extends Module
         $fields = new ModuleFields();
 
         // Create domain label
-        $domain = $fields->label(Language::_('KeyHelp.service_field.domain', true), 'cpanel_domain');
+        $domain = $fields->label(Language::_('Keyhelp.service_field.domain', true), 'cpanel_domain');
         // Create domain field and attach to domain label
         $domain->attach(
             $fields->fieldText('cpanel_domain', $this->Html->ifSet($vars->cpanel_domain), ['id'=>'cpanel_domain'])
@@ -764,7 +766,7 @@ class KeyHelp extends Module
         $fields->setField($domain);
 
         // Create username label
-        $username = $fields->label(Language::_('KeyHelp.service_field.username', true), 'cpanel_username');
+        $username = $fields->label(Language::_('Keyhelp.service_field.username', true), 'cpanel_username');
         // Create username field and attach to username label
         $username->attach(
             $fields->fieldText('cpanel_username', $this->Html->ifSet($vars->cpanel_username), ['id'=>'cpanel_username'])
@@ -773,7 +775,7 @@ class KeyHelp extends Module
         $fields->setField($username);
 
         // Create password label
-        $password = $fields->label(Language::_('KeyHelp.service_field.password', true), 'cpanel_password');
+        $password = $fields->label(Language::_('Keyhelp.service_field.password', true), 'cpanel_password');
         // Create password field and attach to password label
         $password->attach(
             $fields->fieldPassword(
@@ -827,7 +829,7 @@ class KeyHelp extends Module
             'cpanel_domain' => [
                 'format' => [
                     'rule' => [[$this, 'validateHostName']],
-                    'message' => Language::_('KeyHelp.!error.cpanel_domain.format', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_domain.format', true)
                 ],
                 'valid' => [
                     'rule' => [
@@ -841,14 +843,14 @@ class KeyHelp extends Module
                         },
                         ['_linked' => 'cpanel_sub_domain']
                     ],
-                    'message' => Language::_('KeyHelp.!error.cpanel_domain.valid', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_domain.valid', true)
                 ]
             ],
             'cpanel_sub_domain' => [
                 'format' => [
                     'if_set' => true,
                     'rule' => ['matches', '/^((?!-)[a-z0-9-]{1,63}(?<!-))$/i'],
-                    'message' => Language::_('KeyHelp.!error.cpanel_sub_domain.format', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_sub_domain.format', true)
                 ],
                 'availability' => [
                     'if_set' => true,
@@ -858,31 +860,31 @@ class KeyHelp extends Module
                         },
                         ['_linked' => 'cpanel_domain']
                     ],
-                    'message' => Language::_('KeyHelp.!error.cpanel_sub_domain.availability', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_sub_domain.availability', true)
                 ]
             ],
             'cpanel_username' => [
                 'format' => [
                     'if_set' => true,
                     'rule' => ['matches', '/^[a-z]([a-z0-9])*$/i'],
-                    'message' => Language::_('KeyHelp.!error.cpanel_username.format', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_username.format', true)
                 ],
                 'test' => [
                     'if_set' => true,
                     'rule' => ['matches', '/^(?!test)/'],
-                    'message' => Language::_('KeyHelp.!error.cpanel_username.test', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_username.test', true)
                 ],
                 'length' => [
                     'if_set' => true,
                     'rule' => ['betweenLength', 1, 16],
-                    'message' => Language::_('KeyHelp.!error.cpanel_username.length', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_username.length', true)
                 ]
             ],
             'cpanel_password' => [
                 'valid' => [
                     'if_set' => true,
                     'rule' => ['isPassword', 8],
-                    'message' => Language::_('KeyHelp.!error.cpanel_password.valid', true),
+                    'message' => Language::_('Keyhelp.!error.cpanel_password.valid', true),
                     'last' => true
                 ],
             ],
@@ -890,14 +892,14 @@ class KeyHelp extends Module
                 'matches' => [
                     'if_set' => true,
                     'rule' => ['compares', '==', (isset($vars['cpanel_password']) ? $vars['cpanel_password'] : '')],
-                    'message' => Language::_('KeyHelp.!error.cpanel_password.matches', true)
+                    'message' => Language::_('Keyhelp.!error.cpanel_password.matches', true)
                 ]
             ],
            /* 'configoptions[dedicated_ip]' => [
                 'format' => [
                     'if_set' => true,
                     'rule' => ['in_array', ['0', '1']],
-                    'message' => Language::_('KeyHelp.!error.configoptions[dedicated_ip].format', true)
+                    'message' => Language::_('Keyhelp.!error.configoptions[dedicated_ip].format', true)
                 ]
             ],*/
         ];
@@ -992,7 +994,7 @@ class KeyHelp extends Module
 
         if (!$row) {
             $this->Input->setErrors(
-                ['module_row' => ['missing' => Language::_('KeyHelp.!error.module_row.missing', true)]]
+                ['module_row' => ['missing' => Language::_('Keyhelp.!error.module_row.missing', true)]]
             );
             return;
         }
@@ -1990,7 +1992,7 @@ class KeyHelp extends Module
 
         // Set internal error
         if (!$result) {
-            $this->Input->setErrors(['api' => ['internal' => Language::_('KeyHelp.!error.api.internal', true)]]);
+            $this->Input->setErrors(['api' => ['internal' => Language::_('Keyhelp.!error.api.internal', true)]]);
             $success = false;
         }
 
@@ -2037,18 +2039,18 @@ class KeyHelp extends Module
     }
 
     /**
-     * Initializes the KeyHelpApi and returns an instance of that object with the given $host, $user, and $pass set
+     * Initializes the KeyhelpApi and returns an instance of that object with the given $host, $user, and $pass set
      *
      * @param string $host The host to the cPanel server
      * @param string $user The user to connect as
      * @param string $pass The hash-pased password to authenticate with
-     * @return KeyHelpApi The KeyHelpApi instance
+     * @return KeyhelpApi The KeyhelpApi instance
      */
     private function getApi($host, $user, $pass, $use_ssl = true)
     {
-        Loader::load(dirname(__FILE__) . DS . 'apis' . DS . 'cpanel_api.php');
+        Loader::load(dirname(__FILE__) . DS . 'apis' . DS . 'keyhelp_api.php');
 
-        $api = new KeyHelpApi($host);
+        $api = new KeyhelpApi($host);
         $api->set_user($user);
 
         $api->set_token($pass);
@@ -2065,7 +2067,7 @@ class KeyHelp extends Module
      * @param stdClass $module_row A stdClass object representing a single server
      * @return array An array of packages in key/value pair
      */
-    private function getKeyHelpPackages($module_row)
+    private function getKeyhelpPackages($module_row)
     {
         if (!isset($this->DataStructure)) {
             Loader::loadHelpers($this, ['DataStructure']);
@@ -2107,7 +2109,7 @@ class KeyHelp extends Module
      * @param stdClass $module_row A stdClass object representing a single server
      * @return array An array of ACLS in key/value pair
      */
-    private function getKeyHelpAcls($module_row)
+    private function getKeyhelpAcls($module_row)
     {
         if (!isset($this->DataStructure)) {
             Loader::loadHelpers($this, ['DataStructure']);
@@ -2195,20 +2197,20 @@ class KeyHelp extends Module
                 'valid'=>[
                     'rule'=>'isEmpty',
                     'negate'=>true,
-                    'message'=>Language::_('KeyHelp.!error.server_name_valid', true)
+                    'message'=>Language::_('Keyhelp.!error.server_name_valid', true)
                 ]
             ],
             'host_name'=>[
                 'valid'=>[
                     'rule'=>[[$this, 'validateHostName']],
-                    'message'=>Language::_('KeyHelp.!error.host_name_valid', true)
+                    'message'=>Language::_('Keyhelp.!error.host_name_valid', true)
                 ]
             ],
             'user_name'=>[
                 'valid'=>[
                     'rule'=>'isEmpty',
                     'negate'=>true,
-                    'message'=>Language::_('KeyHelp.!error.user_name_valid', true)
+                    'message'=>Language::_('Keyhelp.!error.user_name_valid', true)
                 ]
             ],
             'key'=>[
@@ -2216,7 +2218,7 @@ class KeyHelp extends Module
                     'last'=>true,
                     'rule'=>'isEmpty',
                     'negate'=>true,
-                    'message'=>Language::_('KeyHelp.!error.remote_key_valid', true)
+                    'message'=>Language::_('Keyhelp.!error.remote_key_valid', true)
                 ],
                 'valid_connection'=>[
                     'rule' => [
@@ -2226,23 +2228,23 @@ class KeyHelp extends Module
                         $vars['use_ssl'],
                         &$vars['account_count']
                     ],
-                    'message'=>Language::_('KeyHelp.!error.remote_key_valid_connection', true)
+                    'message'=>Language::_('Keyhelp.!error.remote_key_valid_connection', true)
                 ]
             ],
             'account_limit'=>[
                 'valid'=>[
                     'rule'=>['matches', '/^([0-9]+)?$/'],
-                    'message'=>Language::_('KeyHelp.!error.account_limit_valid', true)
+                    'message'=>Language::_('Keyhelp.!error.account_limit_valid', true)
                 ]
             ],
             'name_servers'=>[
                 'count'=>[
                     'rule'=>[[$this, 'validateNameServerCount']],
-                    'message'=>Language::_('KeyHelp.!error.name_servers_count', true)
+                    'message'=>Language::_('Keyhelp.!error.name_servers_count', true)
                 ],
                 'valid'=>[
                     'rule'=>[[$this, 'validateNameServers']],
-                    'message'=>Language::_('KeyHelp.!error.name_servers_valid', true)
+                    'message'=>Language::_('Keyhelp.!error.name_servers_valid', true)
                 ]
             ]
         ];
@@ -2263,13 +2265,13 @@ class KeyHelp extends Module
                 'valid' => [
                     'rule' => ['matches', '/^(standard|reseller)$/'],
                     // type must be standard or reseller
-                    'message' => Language::_('KeyHelp.!error.meta[type].valid', true),
+                    'message' => Language::_('Keyhelp.!error.meta[type].valid', true),
                 ]
             ],
             'meta[sub_domains]' => [
                 'valid' => [
                     'rule' => ['matches', '/^(disable|enable)$/'],
-                    'message' => Language::_('KeyHelp.!error.meta[sub_domains].valid', true),
+                    'message' => Language::_('Keyhelp.!error.meta[sub_domains].valid', true),
                 ]
             ],
             'meta[domains_list]' => [
@@ -2299,7 +2301,7 @@ class KeyHelp extends Module
                         },
                         ['_linked' => 'meta[sub_domains]']
                     ],
-                    'message' => Language::_('KeyHelp.!error.meta[domains_list].valid', true),
+                    'message' => Language::_('Keyhelp.!error.meta[domains_list].valid', true),
                     'post_format' => function ($domains_csv) {
                         // Create a new CSV list that we've formatted
                         return implode(',', $this->parseElementsFromCsv($domains_csv));
@@ -2309,21 +2311,21 @@ class KeyHelp extends Module
             'meta[account_limit]' => [
                 'valid' => [
                     'rule' => ['matches', '/^([0-9]+)?$/'],
-                    'message' => Language::_('KeyHelp.!error.meta[account_limit].valid', true),
+                    'message' => Language::_('Keyhelp.!error.meta[account_limit].valid', true),
                 ]
             ],
             'meta[package]' => [
                 'empty' => [
                     'rule' => 'isEmpty',
                     'negate' => true,
-                    'message' => Language::_('KeyHelp.!error.meta[package].empty', true) // package must be given
+                    'message' => Language::_('Keyhelp.!error.meta[package].empty', true) // package must be given
                 ]
             ],
             'meta[dedicated_ip]' => [
                 'format' => [
                     'if_set' => true,
                     'rule' => ['in_array', ['0', '1']],
-                    'message' => Language::_('KeyHelp.!error.meta[dedicated_ip].format', true)
+                    'message' => Language::_('Keyhelp.!error.meta[dedicated_ip].format', true)
                 ]
             ],
         ];

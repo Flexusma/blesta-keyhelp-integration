@@ -1,7 +1,7 @@
         <?php
         $this->Widget->clear();
         $this->Widget->setLinkButtons([]);
-        $this->Widget->create($this->_('KeyHelp.add_row.box_title', true));
+        $this->Widget->create($this->_('Keyhelp.add_row.box_title', true));
         ?>
         <div class="inner">
             <?php
@@ -9,43 +9,43 @@
             $this->Form->fieldHidden('account_count', $this->Html->ifSet($vars->account_count, 0));
             ?>
             <div class="title_row first">
-                <h3><?php $this->_('KeyHelp.add_row.basic_title');?></h3>
+                <h3><?php $this->_('Keyhelp.add_row.basic_title');?></h3>
             </div>
             <div class="pad">
                 <ul>
                     <li>
                         <?php
-                        $this->Form->label($this->_('KeyHelp.row_meta.server_name', true), 'server_name');
+                        $this->Form->label($this->_('Keyhelp.row_meta.server_name', true), 'server_name');
                         $this->Form->fieldText('server_name', $this->Html->ifSet($vars->server_name));
                         ?>
                     </li>
                     <li>
                         <?php
-                        $this->Form->label($this->_('KeyHelp.row_meta.host_name', true), 'host_name');
+                        $this->Form->label($this->_('Keyhelp.row_meta.host_name', true), 'host_name');
                         $this->Form->fieldText('host_name', $this->Html->ifSet($vars->host_name));
                         ?>
                     </li>
                     <li>
                         <?php
-                        $this->Form->label($this->_('KeyHelp.row_meta.user_name', true), 'user_name');
+                        $this->Form->label($this->_('Keyhelp.row_meta.user_name', true), 'user_name');
                         $this->Form->fieldText('user_name', $this->Html->ifSet($vars->user_name));
                         ?>
                     </li>
                     <li>
                         <?php
-                        $this->Form->label($this->_('KeyHelp.row_meta.key', true), 'key');
+                        $this->Form->label($this->_('Keyhelp.row_meta.key', true), 'key');
                         $this->Form->fieldTextarea('key', $this->Html->ifSet($vars->key));
                         ?>
                     </li>
                     <li>
                         <?php
                         $this->Form->fieldCheckbox('use_ssl', 'true', $this->Html->ifSet($vars->use_ssl, 'true') == 'true', ['id'=>'use_ssl']);
-                        $this->Form->label($this->_('KeyHelp.row_meta.use_ssl', true), 'use_ssl', ['class'=>'inline']);
+                        $this->Form->label($this->_('Keyhelp.row_meta.use_ssl', true), 'use_ssl', ['class'=>'inline']);
                         ?>
                     </li>
                     <li>
                         <?php
-                        $this->Form->label($this->_('KeyHelp.row_meta.account_limit', true), 'account_limit');
+                        $this->Form->label($this->_('Keyhelp.row_meta.account_limit', true), 'account_limit');
                         $this->Form->fieldText('account_limit', $this->Html->ifSet($vars->account_limit));
                         ?>
                     </li>
@@ -53,17 +53,17 @@
             </div>
 
             <div class="title_row">
-                <h3><?php $this->_('KeyHelp.add_row.name_servers_title');?></h3>
+                <h3><?php $this->_('Keyhelp.add_row.name_servers_title');?></h3>
             </div>
             <div class="pad">
                 <div class="links_row">
-                    <a class="btn btn-default float-right btn-sm ns_row_add" href="#"><i class="fas fa-plus"></i> <span><?php $this->_('KeyHelp.add_row.name_server_btn');?></span></a>
+                    <a class="btn btn-default float-right btn-sm ns_row_add" href="#"><i class="fas fa-plus"></i> <span><?php $this->_('Keyhelp.add_row.name_server_btn');?></span></a>
                 </div>
                 <table class="table">
                     <thead>
                         <tr class="heading_row">
-                            <td><?php $this->Form->label($this->_('KeyHelp.add_row.name_server_col', true));?></td>
-                            <td><?php $this->Form->label($this->_('KeyHelp.add_row.name_server_host_col', true));?></td>
+                            <td><?php $this->Form->label($this->_('Keyhelp.add_row.name_server_col', true));?></td>
+                            <td><?php $this->Form->label($this->_('Keyhelp.add_row.name_server_host_col', true));?></td>
                             <td class="last"></td>
                         </tr>
                     </thead>
@@ -73,9 +73,9 @@
                         for ($i = 0; $i < max(2, $num_servers); $i++) {
                         ?>
                         <tr class="ns_row<?php echo ($i%2 == 1) ? ' odd_row' : '';?>">
-                            <td><?php $this->_('KeyHelp.add_row.name_server', false, '<span>' . ($i+1) . '</span>');?></td>
+                            <td><?php $this->_('Keyhelp.add_row.name_server', false, '<span>' . ($i+1) . '</span>');?></td>
                             <td><?php $this->Form->fieldText('name_servers[]', $this->Html->ifSet($vars->name_servers[$i]));?></td>
-                            <td><a href="#" class="manage ns_row_remove"><?php $this->_('KeyHelp.add_row.remove_name_server');?></a></td>
+                            <td><a href="#" class="manage ns_row_remove"><?php $this->_('Keyhelp.add_row.remove_name_server');?></a></td>
                         </tr>
                         <?php
                         }
@@ -85,7 +85,7 @@
             </div>
 
             <div class="title_row">
-                <h3><?php $this->_('KeyHelp.add_row.notes_title');?></h3>
+                <h3><?php $this->_('Keyhelp.add_row.notes_title');?></h3>
             </div>
             <div class="pad">
                 <ul>
@@ -99,7 +99,7 @@
 
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('KeyHelp.add_row.add_btn', true), ['class' => 'btn btn-primary float-right']);
+                $this->Form->fieldSubmit('save', $this->_('Keyhelp.add_row.add_btn', true), ['class' => 'btn btn-primary float-right']);
                 ?>
             </div>
             <?php

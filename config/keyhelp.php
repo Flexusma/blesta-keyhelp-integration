@@ -1,8 +1,8 @@
 <?php
-Configure::set('KeyHelp.email_templates', [
+Configure::set('Keyhelp.email_templates', [
     'en_us' => [
         'lang' => 'en_us',
-        'text' => 'Your KeyHelp account is now active, details below:
+        'text' => 'Your Keyhelp account is now active, details below:
 
 Username: {service.cpanel_username}
 Password: {service.cpanel_password}

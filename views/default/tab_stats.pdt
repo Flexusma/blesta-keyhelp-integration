@@ -1,13 +1,13 @@
 
     <div class="title_row first">
-        <h3><?php $this->_('KeyHelp.tab_stats.info_title');?></h3>
+        <h3><?php $this->_('Keyhelp.tab_stats.info_title');?></h3>
     </div>
     <div class="pad">
         <table class="table">
             <thead>
                 <tr class="heading_row">
-                    <td style="width: 50%;"><?php $this->_('KeyHelp.tab_stats.info_heading.field');?></td>
-                    <td class="last"><?php $this->_('KeyHelp.tab_stats.info_heading.value');?></td>
+                    <td style="width: 50%;"><?php $this->_('Keyhelp.tab_stats.info_heading.field');?></td>
+                    <td class="last"><?php $this->_('Keyhelp.tab_stats.info_heading.value');?></td>
                 </tr>
             </thead>
             <tbody>
@@ -17,7 +17,7 @@
                     if (isset($stats->account_info->acct[0]->{$key})) {
                     ?>
                     <tr<?php echo $this->Html->concat(' ', ($i%2 == 1) ? ' class="odd_row"' : '', '');?>>
-                        <td><?php $this->_('KeyHelp.tab_stats.info.' . $key);?></td>
+                        <td><?php $this->_('Keyhelp.tab_stats.info.' . $key);?></td>
                         <td><?php $this->Html->_($stats->account_info->acct[0]->{$key});?></td>
                     </tr>
                     <?php
@@ -29,14 +29,14 @@
     </div>
 
     <div class="title_row">
-        <h3><?php $this->_('KeyHelp.tab_stats.bandwidth_title');?></h3>
+        <h3><?php $this->_('Keyhelp.tab_stats.bandwidth_title');?></h3>
     </div>
     <div class="pad">
         <table class="table">
             <thead>
                 <tr class="heading_row">
-                    <td style="width: 50%;"><?php $this->_('KeyHelp.tab_stats.bandwidth_heading.used');?></td>
-                    <td class="last"><?php $this->_('KeyHelp.tab_stats.bandwidth_heading.limit');?></td>
+                    <td style="width: 50%;"><?php $this->_('Keyhelp.tab_stats.bandwidth_heading.used');?></td>
+                    <td class="last"><?php $this->_('Keyhelp.tab_stats.bandwidth_heading.limit');?></td>
                 </tr>
             </thead>
             <tbody>
@@ -44,13 +44,13 @@
                     <td>
                         <?php
                         $usage = $this->Html->ifSet($stats->bandwidth_usage['used'], 0);
-                        $this->_('KeyHelp.tab_stats.bandwidth_value', false, round($usage, 2));
+                        $this->_('Keyhelp.tab_stats.bandwidth_value', false, round($usage, 2));
                         ?>
                     </td>
                     <td>
                         <?php
                         $limit = $this->Html->ifSet($stats->bandwidth_usage['limit'], 0);
-                        $this->_(($this->Html->ifSet($stats->bandwidth_usage['limit']) == 0 ? 'KeyHelp.tab_stats.bandwidth_unlimited' : 'KeyHelp.tab_stats.bandwidth_value'), false, round($limit, 2));
+                        $this->_(($this->Html->ifSet($stats->bandwidth_usage['limit']) == 0 ? 'Keyhelp.tab_stats.bandwidth_unlimited' : 'Keyhelp.tab_stats.bandwidth_value'), false, round($limit, 2));
                         ?>
                     </td>
                 </tr>
@@ -59,14 +59,14 @@
     </div>
 
     <div class="title_row">
-        <h3><?php $this->_('KeyHelp.tab_stats.disk_title');?></h3>
+        <h3><?php $this->_('Keyhelp.tab_stats.disk_title');?></h3>
     </div>
     <div class="pad">
         <table class="table">
             <thead>
                 <tr class="heading_row">
-                    <td style="width: 50%;"><?php $this->_('KeyHelp.tab_stats.disk_heading.used');?></td>
-                    <td class="last"><?php $this->_('KeyHelp.tab_stats.disk_heading.limit');?></td>
+                    <td style="width: 50%;"><?php $this->_('Keyhelp.tab_stats.disk_heading.used');?></td>
+                    <td class="last"><?php $this->_('Keyhelp.tab_stats.disk_heading.limit');?></td>
                 </tr>
             </thead>
             <tbody>
@@ -74,13 +74,13 @@
                     <td>
                         <?php
                         $usage = $this->Html->ifSet($stats->disk_usage['used'], 0);
-                        $this->_('KeyHelp.tab_stats.disk_value', false, round($usage, 2));
+                        $this->_('Keyhelp.tab_stats.disk_value', false, round($usage, 2));
                         ?>
                     </td>
                     <td>
                         <?php
                         $limit = $this->Html->ifSet($stats->disk_usage['limit'], 0);
-                        $this->_(($this->Html->ifSet($stats->disk_usage['limit']) == 0 ? 'KeyHelp.tab_stats.disk_unlimited' : 'KeyHelp.tab_stats.disk_value'), false, round($limit, 2));
+                        $this->_(($this->Html->ifSet($stats->disk_usage['limit']) == 0 ? 'Keyhelp.tab_stats.disk_unlimited' : 'Keyhelp.tab_stats.disk_value'), false, round($limit, 2));
                         ?>
                     </td>
                 </tr>

@@ -1,7 +1,7 @@
 {
     "version": "0.0.1",
-    "name": "KeyHelp.name",
-    "description": "KeyHelp.description",
+    "name": "Keyhelp",
+    "description": "Keyhelp.description",
     "authors": [
         {
             "name": "Flexusma",
@@ -12,8 +12,8 @@
         "name_key": "cpanel_domain"
     },
     "module": {
-        "row": "KeyHelp.module_row",
-        "rows": "KeyHelp.module_row_plural",
+        "row": "Keyhelp.module_row",
+        "rows": "Keyhelp.module_row_plural",
         "row_key": "server_name"
     },
     "email_tags": {

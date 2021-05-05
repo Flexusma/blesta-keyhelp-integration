@@ -130,7 +130,7 @@
 * @since Class available since release 0.1
 **/
 
-class KeyHelpApi
+class KeyhelpApi
 {
     // should debugging statements be printed?
     private $debug			= false;
