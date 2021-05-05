@@ -1,125 +1,9 @@
 <?php
-/**
-* cPanel XMLAPI Client Class
-*
-* This class allows for easy interaction with cPanel's XML-API allow functions within the XML-API to be called
-* by calling funcions within this class
-*
-* LICENSE:
-*
-* Copyright (c) 2012, cPanel, Inc.
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without modification, are permitted provided
-* that the following conditions are met:
-*
-* * Redistributions of source code must retain the above copyright notice, this list of conditions and the
-*   following disclaimer.
-* * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
-*   following disclaimer in the documentation and/or other materials provided with the distribution.
-* * Neither the name of the cPanel, Inc. nor the names of its contributors may be used to endorse or promote
-*   products derived from this software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-* HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-* POSSIBILITY OF SUCH DAMAGE.
-*
-* Version: 1.0.13
-* Last updated: 19 November 2012
-*
-* Changes
-*
-* 1.0.13:
-* Tidy
-*
-* 1.0.12:
-* github#2 - [Bugfix]: typo related to environment variable XMLAPI_USE_SSL
-*
-* 1.0.11:
-* [Feature]: Remove value requirement for park()'s 'topdomain' argument
-*  (Case 51116)
-*
-* 1.0.10:
-* github#1 - [Bugfix]: setresellerpackagelimits() does not properly prepare
-*  input arguments for query (Case 51076)
-*
-* 1.0.9:
-* added input argument to servicestatus method which allows single service
-*  filtering (Case 50804)
-*
-* 1.0.8:
-* correct unpark bug as reported by Randall Kent
-*
-* 1.0.7:
-* Corrected typo for setrellerlimits where xml_query incorrectly called xml-api's setresellerips
-*
-* 1.0.6:
-* Changed 'user' URL parameter for API1/2 calls to 'cpanel_xmlapi_user'/'cpanel_jsonapi_user' to resolve conflicts with API2 functions that use 'user' as a parameter
-* Relocated exmaple script to Example subdirectory
-* Modified example scripts to take remote server IP and root password from environment variables REMOTE_HOST and REMOTE_PASSWORD, respectively
-* Created subdirectory Tests for PHPUnit tests
-* Add PHPUnit test BasicParseTest.php
-*
-* 1.0.5:
-* fix bug where api1_query and api2_query would not return JSON data
-*
-* 1.0.4:
-* set_port will now convert non-int values to ints
-*
-* 1.0.3:
-* Fixed issue with set_auth_type using incorrect logic for determining acceptable auth types
-* Suppress non-UTF8 encoding when using curl
-*
-* 1.0.2:
-* Increased curl buffer size to 128kb from 16kb
-* Fix double encoding issue in terminateresellers()
-*
-* 1.0.1:
-* Fixed use of wrong variable name in curl error checking
-* adjust park() to use api2 rather than API1
-*
-* 1.0
-* Added in 11.25 functions
-* Changed the constructor to allow for either the "DEFINE" config setting method or using parameters
-* Removed used of the gui setting
-* Added fopen support
-* Added auto detection for fopen or curl (uses curl by default)
-* Added ability to return in multiple formats: associative array, simplexml, xml, json
-* Added PHP Documentor documentation for all necessary functions
-* Changed submission from GET to POST
-*
-*
-* @copyright 2012 cPanel, Inc
-* @license http://sdk.cpanel.net/license/bsd.html
-* @version 1.0.13
-* @link http://twiki.cpanel.net/twiki/bin/view/AllDocumentation/AutomationIntegration/XmlApi
-* @since File available since release 0.1
-**/
+
+use GuzzleHttp\Client;
+
 
 /**
-* The base XML-API class
-*
-* The XML-API class allows for easy execution of cPanel XML-API calls.  The goal of this project is to create
-* an open source library that can be used for multiple types of applications.  This class relies on PHP5 compiled
-* with both curl and simplexml support.
-*
-* Making Calls with this class are done in the following steps:
-*
-* 1.) Instaniating the class:
-* $xmlapi = new xmlapi($host);
-*
-* 2.) Setting access credentials within the class via either set_password, set_token, or set_hash:
-* $xmlapi->set_hash("username", $accessHash);
-* $xmlapi->set_token("username", $accessToken);
-* $xmlapi->set_password("username", "password");
-*
-* 3.) Execute a function
-* $xmlapi->listaccts();
 *
 * @category Cpanel
 * @package xmlapi
@@ -128,7 +12,7 @@
 * @version Release: 1.0.13
 * @link http://twiki.cpanel.net/twiki/bin/view/AllDocumentation/AutomationIntegration/XmlApi
 * @since Class available since release 0.1
-**/
+*/
 
 class KeyhelpApi
 {
@@ -145,7 +29,8 @@ class KeyhelpApi
     private $output		=	'json';
 
     // literal strings hash, token, or password
-    private $auth_type 	= token;
+    private $auth_type 	= "token";
+
 
 
     // username to authenticate as
@@ -311,6 +196,7 @@ class KeyhelpApi
     {
         $this->host = $host;
     }
+
 
     /**
     * Return the protocol being used to query
@@ -548,7 +434,7 @@ class KeyhelpApi
     * @param array $vars An associative array of the parameters to be passed to the XML-API Calls
     * @return mixed
     */
-    public function xmlapi_query( $function, $rtype = 0,$vars = array(), $postdata ="" )
+    public function xmlapi_query( $function, $rtype, $postdata="" )
     {
         // Check to make sure all the data needed to perform the query is in place
         if (!$function) {
@@ -566,71 +452,69 @@ class KeyhelpApi
         // Build the query:
 
 
-        $args = http_build_query($vars, '', '&');
-        $url =  $this->protocol . '://' . $this->host . "/api/v1/"./*':' . $this->port . $query_type .*/ $function;
+        //$args = http_build_query($vars, '', '&');
+        $url =  $this->protocol . '://' . $this->host . "/api/v1/";
 
         if ($this->debug) {
-            error_log('URL: ' . $url);
-            error_log('DATA: ' . $args);
-        }
-
-        // Set the $auth string
-
-        if ($this->auth_type == 'hash' || $this->auth_type == 'token') {
-            $authstr = 'X-API-Key: ' . $this->auth . "\r\n";
-        } elseif ($this->auth_type == 'pass') {
-            $authstr = 'Authorization: Basic ' . base64_encode($this->user .':'. $this->auth) . "\r\n";
-        } else {
-            throw new Exception('invalid auth_type set');
-        }
-
-        if ($this->debug) {
-            error_log("Authentication Header: " . $authstr ."\n");
+            error_log('URL: ' . $url,0);
+            //error_log('DATA: ' . $args,0);
         }
 
         // Perform the query (or pass the info to the functions that actually do perform the query)
 
-        $response = $this->curl_query($url, $args, $authstr, $rtype, $postdata);
+        $client = new Client(["base_uri" => $url]);
+        try {
+            if($rtype == 1){
+                $options = [
+                    'json' => $postdata,
+                    'headers' =>[
+                        'X-API-Key' => $this->auth,
+                    ]
+                ];
+                $response= $client->request('POST',$function,$options);
+            }elseif($rtype == 2){
+                $options = [
+                    'json' => $postdata,
+                    'headers' =>[
+                        'X-API-Key' => $this->auth,
+                    ],
+                ];
+                $response= $client->request('PUT',$function,$options);
+            }elseif($rtype == 3){
+                $options = [
+                    //'json' => $postdata,
+                    'headers' =>[
+                        'X-API-Key' => $this->auth,
+                    ],
+                ];
+                $response= $client->request('DELETE',$function,$options);
+            }else{
+                $options = [
+                    //'json' => $postdata,
+                    'headers' =>[
+                        'X-API-Key' => $this->auth,
+                    ],
+                ];
+                $response = $client->request('GET', $function, $options);
 
-        /*
-        *	Post-Query Block
-        * Handle response, return proper data types, debug, etc
-        */
-
-        // print out the response if debug mode is enabled.
-        if ($this->debug) {
-            error_log("RESPONSE:\n " . $response);
+            }
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            return $response = $e->getMessage();
         }
 
-        // The only time a response should contain <html> is in the case of authentication error
-        // cPanel 11.25 fixes this issue, but if <html> is in the response, we'll error out.
-
-        if (stristr($response, '<html>') == true) {
-            if (stristr($response, 'Login Attempt Failed') == true) {
-                error_log("Login Attempt Failed");
-
-                return;
-            }
-            if (stristr($response, 'action="/login/"') == true) {
-                error_log("Authentication Error");
-
-                return;
-            }
-
-            return;
-        }
+        //$response = $this->curl_query($url, $authstr, $rtype, $postdata);
 
 
         // perform simplexml transformation (array relies on this)
-        if ( ($this->output == 'simplexml') || $this->output == 'array') {
+       /* if ( ($this->output == 'simplexml') || $this->output == 'array') {
             $response = simplexml_load_string($response, null, LIBXML_NOERROR | LIBXML_NOWARNING);
             if (!$response) {
-                    error_log("Some error message here");
+                    error_log("Some error message here",0);
 
                     return;
             }
             if ($this->debug) {
-                error_log("SimpleXML var_dump:\n" . print_r($response, true));
+                error_log("SimpleXML var_dump:\n" . print_r($response, true),0);
             }
         }
 
@@ -638,14 +522,14 @@ class KeyhelpApi
         if ($this->output == 'array') {
             $response = $this->unserialize_xml($response);
             if ($this->debug) {
-                error_log("Associative Array var_dump:\n" . print_r($response, true));
+                error_log("Associative Array var_dump:\n" . print_r($response, true),0);
             }
-        }
+        }*/
 
-        return $response;
+        return strval($response->getBody());
     }
 
-    private function curl_query( $url, $postdata, $authstr, $rtype, $body)
+    private function curl_query( $url, $authstr, $rtype, $body)
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -664,23 +548,23 @@ class KeyhelpApi
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
-        if($rtype = 1){
-            curl_setopt($curl, CURLOPT_POST, 1);
+        if($rtype == 1){
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt( $curl, CURLOPT_POSTFIELDS, $body );
-        }else if($rtype = 2){
-            curl_setopt($curl, CURLOPT_PUT, 1);
+        }else if($rtype == 2){
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
             curl_setopt( $curl, CURLOPT_POSTFIELDS, $body );
-        }else if($rtype = 3){
+        }else if($rtype == 3){
             curl_setopt($curl,CURLOPT_CUSTOMREQUEST, "DELETE");
         }
-        $this->log("Curl request",$curl,'input', true);
+        //error_log("Curl request: ".curl_getinfo($curl),0);
         $result = curl_exec($curl);
         if ($result == false) {
-            $this->log("Curl response",$curl,'output', false);
-            throw new Exception("curl_exec threw error \"" . curl_error($curl) . "\" for " . $url . "?" . $postdata );
+           //error_log("Curl response: ".curl_error($curl),0);
+            throw new Exception("curl_exec threw error \"" . curl_error($curl) . "\" for " . $url );
         }
         curl_close($curl);
-        $this->log("Curl response",json_decode($curl),'output', false);
+        //error_log("Curl response: ".json_decode($result),0);
         return $result;
     }
 
@@ -739,9 +623,19 @@ class KeyhelpApi
     //get userId from username
 
     public function getByUsername($username){
-        $user = $this->xmlapi_query('clients/name/'.$username, 0 );
+        $user = $this->xmlapi_query('clients/name/'.$username, 0,"");
+        error_log("trying to fetch user by username: ".$user,0);
+        $user = json_decode($user);
         if(isset($user) && is_int($user->id) ){
             return $user;
+        }
+    }
+    public function getByHostingplan($plan){
+        $rplan = $this->xmlapi_query('hosting-plans/name/'.$plan, 0,"");
+        error_log("trying to fetch plan by name: ".$rplan,0);
+        $rplan = json_decode($rplan);
+        if(isset($rplan) && is_int($rplan->id) ){
+            return $rplan;
         }
     }
 
@@ -765,28 +659,30 @@ class KeyhelpApi
     public function createacct($acctconf)
     {
         if (!is_array($acctconf)) {
-            error_log("createacct requires that first parameter passed to it is an array");
+            error_log("createacct requires that first parameter passed to it is an array",0);
 
             return false;
         }
         if (!isset($acctconf['username']) || !isset($acctconf['password'])) {
-            error_log("createacct requires that username, password elements are in the array passed to it");
+            error_log("createacct requires that username, password elements are in the array passed to it",0);
 
             return false;
         }
 
-        $body = json_encode(array(
+        $planId = $this->getByHostingplan($acctconf["plan"]);
+
+        $body = array(
             "username" => $acctconf['username'],
             "email" => $acctconf["contactemail"],
             //set later!!!
-            "id_hosting_plan" => $acctconf["plan"],
+            "id_hosting_plan" => $planId->id,
             "password" => $acctconf["password"],
             "send_login_credentials"=> true,
 
 
-        ));
-
-        return $this->xmlapi_query('clients', 1, array(), $body);
+        );
+        //return $body;
+        return $this->xmlapi_query('clients', 1, $body);
     }
 
     /**
@@ -802,19 +698,19 @@ class KeyhelpApi
     public function passwd($username, $pass)
     {
         if (!isset($username) || !isset($pass)) {
-            error_log("passwd requires that an username and password are passed to it");
+            error_log("passwd requires that an username and password are passed to it",0);
 
             return false;
         }
 
-        $body = json_encode(array(
+        $body = array(
            "password" => $pass
-        ));
+        );
 
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}", 2, null, $body);
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}", 2, $body);
+        else error_log("no user found for username: {$username}",0);
     }
 
     /**
@@ -830,10 +726,10 @@ class KeyhelpApi
     public function listaccts($searchtype = null, $search = null)
     {
         if ($search) {
-            return $this->xmlapi_query("clients/{$search}");
+            return $this->xmlapi_query("clients/{$search}",0,"");
         }
 
-        return $this->xmlapi_query('clients');
+        return $this->xmlapi_query('clients',0,"");
     }
 
     /**
@@ -850,12 +746,12 @@ class KeyhelpApi
     public function modifyacct($username, $args = array())
     {
         if (!isset($username)) {
-            error_log("modifyacct requires that username is passed to it");
+            error_log("modifyacct requires that username is passed to it",0);
 
             return false;
         }
         if (sizeof($args) < 1) {
-            error_log("modifyacct requires that at least one attribute is passed to it");
+            error_log("modifyacct requires that at least one attribute is passed to it",0);
 
             return false;
         }
@@ -865,8 +761,8 @@ class KeyhelpApi
 
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}", 2, null, json_encode($chng));
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}", 2,$chng);
+        else error_log("no user found for username: {$username}",0);
 
     }
 
@@ -890,15 +786,15 @@ class KeyhelpApi
     public function accountsummary($username)
     {
         if (!isset($username)) {
-            error_log("accountsummary requires that an username is passed to it");
+            error_log("accountsummary requires that an username is passed to it",0);
 
             return false;
         }
 
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}");
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}","");
+        else error_log("no user found for username: {$username}",0);
     }
 
     /**
@@ -915,7 +811,7 @@ class KeyhelpApi
     public function suspendacct($username, $reason = null)
     {
         if (!isset($username)) {
-            error_log("suspendacct requires that an username is passed to it");
+            error_log("suspendacct requires that an username is passed to it",0);
 
             return false;
         }
@@ -926,8 +822,8 @@ class KeyhelpApi
 
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}", 2, null, json_encode($chng));
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}", 2, $chng);
+        else error_log("no user found for username: {$username}",0);
     }
 
 
@@ -945,14 +841,14 @@ class KeyhelpApi
     public function removeacct($username, $keepdns = false)
     {
         if (!isset($username)) {
-            error_log("removeacct requires that a username is passed to it");
+            error_log("removeacct requires that a username is passed to it",0);
 
             return false;
         }
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}", 3);
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}", 3,"");
+        else error_log("no user found for username: {$username}",0);
 
     }
 
@@ -968,7 +864,7 @@ class KeyhelpApi
     public function unsuspendacct($username)
     {
         if (!isset($username)) {
-            error_log("unsuspendacct requires that a username is passed to it");
+            error_log("unsuspendacct requires that a username is passed to it",0);
 
             return false;
         }
@@ -978,8 +874,8 @@ class KeyhelpApi
 
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}", 2, null, json_encode($chng));
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}", 2, $chng);
+        else error_log("no user found for username: {$username}",0);
     }
 
     /**
@@ -995,18 +891,20 @@ class KeyhelpApi
     public function changepackage($username, $pkg)
     {
         if (!isset($username) || !isset($pkg)) {
-            error_log("changepackage requires that username and pkg are passed to it");
+            error_log("changepackage requires that username and pkg are passed to it",0);
 
             return false;
         }
+        $package = $this->getByHostingplan($pkg);
+
         $chng = array(
-            "id_hosting_plan" => $pkg
+            "id_hosting_plan" => $package->id
         );
 
         $user = $this->getByUsername($username);
         if(is_int($user->id))
-            return $this->xmlapi_query("clients/{$user->id}", 2, null, json_encode($chng));
-        else error_log("no user found for username: {$username}");
+            return $this->xmlapi_query("clients/{$user->id}", 2, $chng);
+        else error_log("no user found for username: {$username}",0);
     }
 
 
@@ -1024,7 +922,8 @@ class KeyhelpApi
     */
     public function listpkgs()
     {
-        return $this->xmlapi_query('hosting-plans');
+        error_log("Trying to fetch hosting plans",0);
+        return $this->xmlapi_query('hosting-plans',0,"");
     }
 
 
@@ -1041,11 +940,11 @@ class KeyhelpApi
     public function showbw($args = null)
     {
         if($args["searchtype"]=="user") {
-            $user = $this->getByUsername($args->search);
+            $user = $this->getByUsername($args["search"]);
             if (is_int($user->id))
-                return $this->xmlapi_query("clients/{$user->id}/stats");
-            else error_log("no user found for username: {$args->search}");
-        }else error_log("no user information found in args: {$args}");
+                return $this->xmlapi_query("clients/{$user->id}/stats",0,"");
+            else error_log("no user found for username: {$args->search}",0);
+        }else error_log("no user information found in args: {$args}",0);
     }
 
 

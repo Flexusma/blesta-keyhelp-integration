@@ -9,11 +9,14 @@ use Blesta\Core\Util\Validate\Server;
  * @license http://www.blesta.com/license/ The Blesta License Agreement
  * @link http://www.blesta.com/ Blesta
  */
+
+require 'vendor/autoload.php';
+
 class Keyhelp extends Module
 {
 
     /**
-     * Initializes the module
+     * Initializes the modul
      */
     public function __construct()
     {
@@ -1096,9 +1099,9 @@ class Keyhelp extends Module
             $masked_params['password'] = '***';
             $this->log($row->meta->host_name . '|createacct', serialize($masked_params), 'input', true);
             unset($masked_params);
-            $result = $this->parseResponse($api->createacct($params));
-
-            if ($this->Input->errors()) {
+            $result = $api->createacct($params);
+            $this->log("Creating panel user: ",strval($result),"output",true);
+            if (isset(json_decode($result)->code)) {
                 return;
             }
 
@@ -1139,7 +1142,7 @@ class Keyhelp extends Module
             } */
 
             // Update the number of accounts on the server
-            $this->updateAccountCount($row);
+           // $this->updateAccountCount($row);
         }
 
         // Return service fields
@@ -1298,23 +1301,14 @@ class Keyhelp extends Module
 
             $service_fields = $this->serviceFieldsToObject($service->fields);
 
-            if ($package->meta->type == 'reseller') {
-                $this->log(
-                    $row->meta->host_name . '|suspendreseller',
-                    serialize($service_fields->cpanel_username),
-                    'input',
-                    true
-                );
-                $this->parseResponse($api->suspendreseller($service_fields->cpanel_username));
-            } else {
                 $this->log(
                     $row->meta->host_name . '|suspendacct',
                     serialize($service_fields->cpanel_username),
                     'input',
                     true
                 );
-                $this->parseResponse($api->suspendacct($service_fields->cpanel_username));
-            }
+                $res = $api->suspendacct($service_fields->cpanel_username);
+                $this->log("Suspend account: ".$service_fields->cpanel_username,$res,"output",true);
         }
 
         return null;
@@ -1347,23 +1341,14 @@ class Keyhelp extends Module
 
             $service_fields = $this->serviceFieldsToObject($service->fields);
 
-            if ($package->meta->type == 'reseller') {
-                $this->log(
-                    $row->meta->host_name . '|unsuspendreseller',
-                    serialize($service_fields->cpanel_username),
-                    'input',
-                    true
-                );
-                $this->parseResponse($api->unsuspendreseller($service_fields->cpanel_username));
-            } else {
-                $this->log(
-                    $row->meta->host_name . '|unsuspendacct',
-                    serialize($service_fields->cpanel_username),
-                    'input',
-                    true
-                );
-                $this->parseResponse($api->unsuspendacct($service_fields->cpanel_username));
-            }
+            $this->log(
+                $row->meta->host_name . '|unsuspendacct',
+                serialize($service_fields->cpanel_username),
+                'input',
+                true
+            );
+            $res = $api->suspendacct($service_fields->cpanel_username);
+            $this->log("Unuspend account: ".$service_fields->cpanel_username,$res,"output",true);
         }
         return null;
     }
@@ -1393,26 +1378,15 @@ class Keyhelp extends Module
 
             $service_fields = $this->serviceFieldsToObject($service->fields);
 
-            if ($package->meta->type == 'reseller') {
-                $this->log(
-                    $row->meta->host_name . '|terminatereseller',
-                    serialize($service_fields->cpanel_username),
-                    'input',
-                    true
-                );
-                $this->parseResponse($api->terminatereseller($service_fields->cpanel_username));
-            } else {
                 $this->log(
                     $row->meta->host_name . '|removeacct',
                     serialize($service_fields->cpanel_username),
                     'input',
                     true
                 );
-                $this->parseResponse($api->removeacct($service_fields->cpanel_username));
-            }
+                $res =$api->removeacct($service_fields->cpanel_username);
+                $this->log("Delete account: ".$service_fields->cpanel_username,$res,"output",true);
 
-            // Update the number of accounts on the server
-            $this->updateAccountCount($row);
         }
         return null;
     }
@@ -1457,30 +1431,10 @@ class Keyhelp extends Module
                     true
                 );
 
-                $this->parseResponse($api->changepackage($service_fields->cpanel_username, $package_to->meta->package));
+                $res = $api->changepackage($service_fields->cpanel_username, $package_to->meta->package);
+                $this->log("Change package: ".$service_fields->cpanel_username,$res,"output",true);
             }
 
-            // If reseller and we have an Account Limit set, update the reseller's limits
-            if ($package_to->meta->type == 'reseller' && $package_to->meta->account_limit != '') {
-                $this->log(
-                    $row->meta->host_name . '|setresellerlimits',
-                    serialize([
-                        'user' => $service_fields->cpanel_username,
-                        'account_limit' => $package_to->meta->account_limit,
-                        'enable_account_limit' => true
-                    ]),
-                    'input',
-                    true
-                );
-
-                $this->parseResponse(
-                    $api->setresellerlimits([
-                        'user' => $service_fields->cpanel_username,
-                        'account_limit' => $package_to->meta->account_limit,
-                        'enable_account_limit' => true
-                    ])
-                );
-            }
         }
         return null;
     }
@@ -1623,17 +1577,8 @@ class Keyhelp extends Module
             'input',
             true
         );
-        $stats->account_info = $this->parseResponse($api->accountsummary($service_fields->cpanel_username));
-
-        $stats->disk_usage = [
-            'used' => null,
-            'limit' => null
-        ];
-        $stats->bandwidth_usage = [
-            'used' => null,
-            'limit' => null
-        ];
-
+        $stats = $api->accountsummary($service_fields->cpanel_username);
+        $stats = json_decode($stats);
      /*   // Get bandwidth/disk for reseller user
         if ($package->meta->type == 'reseller') {
             $this->log(
@@ -1661,20 +1606,14 @@ class Keyhelp extends Module
                 'searchtype' => 'user'
             ];
             $this->log($row->meta->host_name . '|showbw', serialize($params), 'input', true);
-            $bw = $this->parseResponse($api->showbw($params));
+            $bw = json_decode($api->showbw($params));
 
-            if (isset($bw->bandwidth[0]->acct[0])) {
-                $stats->bandwidth_usage['used'] = $bw->bandwidth[0]->acct[0]->totalbytes/(1024*1024);
-                $stats->bandwidth_usage['limit'] = $bw->bandwidth[0]->acct[0]->limit/(1024*1024);
-            }
 
-            if (isset($stats->account_info->acct[0])) {
-                $stats->disk_usage['used'] = preg_replace('/[^0-9]/', '', $stats->account_info->acct[0]->diskused);
-                $stats->disk_usage['limit'] = preg_replace('/[^0-9]/', '', $stats->account_info->acct[0]->disklimit);
-            }
-       // }
 
-        return $stats;
+
+            $this->log($row->meta->host_name . '|showbw', json_encode($bw), 'output', true);
+
+        return $bw;
     }
 
     /**
@@ -1789,8 +1728,8 @@ class Keyhelp extends Module
         try {
             $output = json_decode($api->listaccts());
 
-            if (isset($output->acct) && is_array($output->acct)) {
-                $accounts = count($output->acct);
+            if (isset($output) && is_array($output)) {
+                $accounts = count($output);
             }
         } catch (Exception $e) {
             // Nothing to do
@@ -1798,34 +1737,6 @@ class Keyhelp extends Module
         return $accounts;
     }
 
-    /**
-     * Updates the module row meta number of accounts
-     *
-     * @param stdClass $module_row A stdClass object representing a single server
-     */
-    private function updateAccountCount($module_row)
-    {
-        $api = $this->getApi(
-            $module_row->meta->host_name,
-            $module_row->meta->user_name,
-            $module_row->meta->key,
-            $module_row->meta->use_ssl
-        );
-
-        // Get the number of accounts on the server
-        if (($count = $this->getAccountCount($api)) !== false) {
-            // Update the module row account list
-            Loader::loadModels($this, ['ModuleManager']);
-            $vars = $this->ModuleManager->getRowMeta($module_row->id);
-
-            if ($vars) {
-                $vars->account_count = $count;
-                $vars = (array)$vars;
-
-                $this->ModuleManager->editRow($module_row->id, $vars);
-            }
-        }
-    }
 
     /**
      * Validates whether or not the connection details are valid by attempting to fetch
@@ -1869,7 +1780,7 @@ class Keyhelp extends Module
         $username = ltrim($username, '0123456789');
 
         $length = strlen($username);
-        $pool = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $pool = 'abcdefghiklmnopqrstuvwxyz0123456789';
         $pool_size = strlen($pool);
 
         if ($length < 5) {
@@ -1888,7 +1799,7 @@ class Keyhelp extends Module
         // Re-key the listings
         if (!empty($accounts)) {
             foreach ($accounts as $key => $account) {
-                $accounts[$account->user] = $account;
+                $accounts[$account->username] = $account;
                 unset($accounts[$key]);
             }
 
@@ -1926,8 +1837,8 @@ class Keyhelp extends Module
             if ($api) {
                 $output = json_decode($api->listaccts('user', $name));
 
-                if (isset($output->acct)) {
-                    $user = $output->acct;
+                if (isset($output)) {
+                    $user = $output;
                 }
             }
         } catch (Exception $e) {
@@ -2142,15 +2053,16 @@ class Keyhelp extends Module
             $package_list = $api->listpkgs();
             $result = json_decode($package_list);
 
+
             $success = false;
-            if (isset($result->package)) {
+            if (isset($result[1]->id)) {
                 $success = true;
-                $packages = $this->ArrayHelper->numericToKey($result->package, 'name', 'name');
+                $packages = $this->ArrayHelper->numericToKey($result, 'name', 'name');
             }
 
-            $this->log($module_row->meta->host_name, $package_list, 'output', $success);
+            $this->log($module_row->meta->host_name, $package_list."     |||     ".strval($result), 'output', $success);
         } catch (Exception $e) {
-            // API request failed
+            $this->log($module_row->meta->host_name . '|failed'.$e, null, 'output',false);
         }
 
         return $packages;

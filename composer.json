@@ -1,10 +1,10 @@
 {
-    "name": "blesta/cpanel",
-    "description": "cPanel",
+    "name": "blesta/keyhelp",
+    "description": "KeyHelp",
     "license": "proprietary",
     "type": "blesta-module",
     "require": {
         "blesta/composer-installer": "~1.0",
-        "phillipsdata/priority-schedule":"^1.0"
+        "guzzlehttp/guzzle": "^7.0"
     }
 }

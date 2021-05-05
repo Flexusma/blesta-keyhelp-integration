@@ -125,9 +125,15 @@ $lang['Keyhelp.tab_client_stats.info.domain'] = 'Domain';
 $lang['Keyhelp.tab_client_stats.info.ip'] = 'IP Address';
 $lang['Keyhelp.tab_client_stats.bandwidth_title'] = 'Bandwidth Usage (Month to Date)';
 $lang['Keyhelp.tab_client_stats.disk_title'] = 'Disk Usage';
-$lang['Keyhelp.tab_client_stats.usage'] = '(%1$s MB/%2$s MB)'; // %1$s is the amount of resource usage, %2$s is the resource usage limit
-$lang['Keyhelp.tab_client_stats.usage_unlimited'] = '(%1$s MB/∞)'; // %1$s is the amount of resource usage
-
+$lang['Keyhelp.tab_client_stats.domain_title'] = 'Domains';
+$lang['Keyhelp.tab_client_stats.subdomain_title'] = 'Subdomains';
+$lang['Keyhelp.tab_client_stats.emailacc_title'] = 'Email Accounts';
+$lang['Keyhelp.tab_client_stats.emailadd_title'] = 'Email Addresses';
+$lang['Keyhelp.tab_client_stats.db_title'] = 'Database Usage';
+$lang['Keyhelp.tab_client_stats.usage'] = '(%1$s MB | %2$s MB)'; // %1$s is the amount of resource usage, %2$s is the resource usage limit
+$lang['Keyhelp.tab_client_stats.usage_unlimited'] = '(%1$s | MB/∞)'; // %1$s is the amount of resource usage
+$lang['Keyhelp.tab_client_stats.usage.amount'] = '(%1$s | %2$s)'; // %1$s is the amount of resource usage, %2$s is the resource usage limit
+$lang['Keyhelp.tab_client_stats.usage_unlimited.amount'] = '(%1$s | ∞)';
 
 // Service info
 $lang['Keyhelp.service_info.username'] = 'Username';
