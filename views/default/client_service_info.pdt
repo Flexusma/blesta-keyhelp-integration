@@ -1,0 +1,27 @@
+    <div class="table-responsive">
+        <table class="table table-curved table-striped">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-share fa-flip-vertical"></i></th>
+                    <th><?php $this->_('KeyHelp.service_info.username');?></th>
+                    <th><?php $this->_('KeyHelp.service_info.password');?></th>
+                    <th><?php $this->_('KeyHelp.service_info.server');?></th>
+                    <th><?php $this->_('KeyHelp.service_info.options');?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td><?php $this->Html->_($service_fields->cpanel_username);?></td>
+                    <td><?php $this->Html->_($service_fields->cpanel_password);?></td>
+                    <td><?php $this->Html->_($module_row->meta->host_name);?></td>
+                    <td>
+                        <?php
+                        // if ($this->Html->ifSet($login_url)) {
+                        ?>
+                        <a href="<?php //$this->Html->_($login_url);?>" target="_blank"><?php $this->_('KeyHelp.service_info.option_login');?></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
